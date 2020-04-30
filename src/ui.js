@@ -119,7 +119,10 @@ const Slowdance = ({ promises, onExit } = {}) => {
                 incrementPointer();
             }
             if (input === "g") {
-                setPointer(key.shift ? filteredPromises.length - 1 : 0);
+                setPointer(0);
+            }
+            if (input === "G") {
+                setPointer(filteredPromises.length - 1);
             }
             if (input === "q") {
                 exit();
@@ -154,8 +157,18 @@ const Slowdance = ({ promises, onExit } = {}) => {
     };
 
     const renderPromise = (promise, index) => {
-        const { status, label, value } = promise;
+        const {
+            status,
+            label,
+            result,
+            error,
+            labelResult,
+            labelError,
+        } = promise;
         const pointed = index === pointer;
+        const renderedAfterLabel =
+            (result && labelResult && labelResult(result)) ||
+            (error && labelError && labelError(error));
         return (
             <Text key={index}>
                 <Color
@@ -166,7 +179,7 @@ const Slowdance = ({ promises, onExit } = {}) => {
                     {index.toString().padStart(lineNumberPadding)}
                 </Color>{" "}
                 <Color keyword={getColorForStatus(status)}>
-                    [{status}] {label} {value}
+                    [{status}] {label} {renderedAfterLabel}
                 </Color>
             </Text>
         );
@@ -180,7 +193,6 @@ const Slowdance = ({ promises, onExit } = {}) => {
                 )}
             </Box>
             <Box width="100%">
-                {renderStatusText()} |
                 {!isFiltering && (
                     <>
                         <ControlBarElement
@@ -213,14 +225,13 @@ const Slowdance = ({ promises, onExit } = {}) => {
                         <ControlBarElement
                             triggerKey="l"
                             onTrigger={() => setScrollLocked(!isScrollLocked)}
-                            label={isScrollLocked ? "unlock" : "lock"}
+                            label={isScrollLocked ? "Unlock" : "Lock"}
                         />
                     </>
                 )}
                 <ControlBarElement
                     triggerKey={isFiltering ? "esc" : "f"}
                     label="Filter"
-                    last
                     active={isFiltering}
                     onTrigger={handleToggleFilter}
                     restLabel={
@@ -234,7 +245,8 @@ const Slowdance = ({ promises, onExit } = {}) => {
                             </>
                         )
                     }
-                />
+                />{" "}
+                {renderStatusText()}
             </Box>
         </Box>
     );

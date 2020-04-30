@@ -1,6 +1,6 @@
 require("@babel/register");
 
-const { Slowdance } = require("./src");
+const Slowdance = require("./src");
 
 const main = () => {
     const slowdance = new Slowdance({
@@ -18,13 +18,17 @@ const main = () => {
                 new Promise((resolve, reject) => {
                     setTimeout(() => {
                         if (willReject) {
-                            reject();
+                            reject("nope");
                         } else {
-                            resolve("done");
+                            resolve("yep");
                         }
                     }, waitTime);
                 }),
-                `WillReject: ${willReject} WaitTime: ${waitTime}`
+                {
+                    label: `WillReject: ${willReject} WaitTime: ${waitTime}`,
+                    labelError: (err) => `Error: ${err}`,
+                    labelResult: (res) => `Success: ${res}`,
+                }
             )
             .catch(() => {});
         setTimeout(addPromise, 500 + Math.random() * 1000);
