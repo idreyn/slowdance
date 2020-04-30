@@ -6,8 +6,10 @@
 		"node": ">=8"
 	},
 	"scripts": {
+		"lint": "eslint ./src",
 		"compile": "babel src --out-dir dist",
-		"prepublish": "npm run compile"
+		"prepublish": "npm run compile",
+		"prepublishOnly": "npm run lint"
 	},
 	"main": "./dist/index.js",
 	"dependencies": {
